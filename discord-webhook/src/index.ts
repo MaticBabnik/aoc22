@@ -8,7 +8,7 @@ import { getImageBuffer } from "./gen";
 async function main(leaderboardId: string, sessionCookie: string, webhookUrl: string) {
     const then = Date.now();
 
-    const leaderboard = await get(leaderboardId, sessionCookie, true);
+    const leaderboard = await get(leaderboardId, sessionCookie);
     const image = await getImageBuffer(leaderboard);
 
     if (!image) throw "Screenshot failed?";
