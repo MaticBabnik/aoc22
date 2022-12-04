@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs')
+import { input } from "../unsuck.js";
 
 const dec = { A: 1, B: 2, C: 3, X: 1, Y: 2, Z: 3 },
     win = { 1: 2, 2: 3, 3: 1 },
@@ -9,10 +9,8 @@ const dec = { A: 1, B: 2, C: 3, X: 1, Y: 2, Z: 3 },
         3: x => win[x],
     };
 
-const com = readFileSync('input2')
-    .toString()
-    .split('\n')
-    .map(x => x.split(' ').map(y => dec[y]))
+const com = input('input3', '\n')
+    .map(x => x.split(' ').map(y => dec[y]));
 
 const score = x => x.map(([h, m]) => h == m ? m + 3 : (win[h] == m ? m + 6 : m)).reduce((p, c) => c + p);
 
