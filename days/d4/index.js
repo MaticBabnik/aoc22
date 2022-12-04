@@ -1,10 +1,10 @@
 import { input } from "../unsuck.js";
-const ip = input('input4', '\n', ',').map(x => x.map(y => y.split`-`.map(z => z - 0)))
+const ip = input('input4', '\n', ',').map(x => x.map(y => y.split`-`.map(z => z - 0))),
 
-const fo = (a, b) => (a[0] <= b[0] && a[1] >= b[1]) || (b[0] <= a[0] && b[1] >= a[1]);
-const po = (a, b) => (a[0] <= b[0] && a[1] >= b[0]) || (b[0] <= a[0] && b[1] >= a[0]);
+    fo = ([a, c], [b, d]) => (a <= b && c >= d) || (b <= a && d >= c),
+    po = ([a, c], [b, d]) => (a <= b && c >= b) || (b <= a && d >= a),
 
-const a = ip.map(x => fo(x[0], x[1])).filter(x => !!x).length;
-const b = ip.map(x => po(x[0], x[1])).filter(x => !!x).length;
+    a = ip.map(x => fo(...x)).filter(x => x).length,
+    b = ip.map(x => po(...x)).filter(x => x).length;
 
-console.log({ a,b });
+console.log({ a, b });
