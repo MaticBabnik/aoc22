@@ -1,31 +1,15 @@
 import { input } from "../unsuck.js";
-let [s, i] = input('input5', '\n\n', '\n')
 
-let stack = s.map(x => (x + ' ').split('').by(4).map(y => y[1]).collect())
-    .slice(0, -1)
-    .reverse().reduce((a, c) => {
-        c.forEach((z, i) => {
-            if (z != ' ')
-                a[i].push(z);
-        })
-        return a;
-    }, [...Array(Math.round(s[0].length / 4))].map(x => Array()));
+let [s, i] = input('input5', '\n\n', '\n'),
+    p = t => console.log(t.map(x => x.at(-1)).join``),
+    st = s.map(x => `${x} `.split``.by(4).map(y => y[1]).collect())
+        .slice(0, -1).reverse().reduce((a, c) => c.forEach((z, i) => z != ' ' && a[i].push(z)) || a,
+            [...Array(Math.round(s[0].length / 4))].map(x => [])),
+    z = JSON.parse(JSON.stringify(st)), //backup
+    j = i.map(x => x.match(/\d+/g).map(y => y - 1));
 
-const s2 = JSON.parse(JSON.stringify(stack)); //backup
-
-i.map(x => x.match(/\w* (\d*) \w* (\d*) \w* (\d*)/).slice(1, 4).map(y => y - 0))
-    .forEach(([n, f, t]) => [...Array(n)].forEach(_ => stack[f - 1].length && stack[t - 1].push(stack[f - 1].pop())));
-
-console.log(stack.map(x => x.at(-1)).join(''))
-
-stack = s2; //load backup
-i.map(x => x.match(/\w* (\d*) \w* (\d*) \w* (\d*)/).slice(1, 4).map(y => y - 0))
-    .forEach(([n, f, t]) => {
-        const r = [];
-        [...Array(n)].forEach(() => {
-            stack[f - 1].length && r.push(stack[f - 1].pop());
-        });
-        stack[t - 1] = [...stack[t - 1], ...r.reverse()]
-    });
-
-console.log(stack.map(x => x.at(-1)).join(''))
+j.forEach(([n, f, t]) => [...Array(n + 1)].forEach(_ => st[f].length && st[t].push(st[f].pop())));
+p(st);
+st = z; //load backup for part 2
+j.forEach(([n, f, t]) => (st[t] = [...st[t], ...st[f].slice(-n - 1)]) && (st[f] = st[f].slice(0, -n - 1)));
+p(st);
