@@ -91,7 +91,7 @@ export async function getImageBuffer(leaderboard: ILeaderboard) {
     page.setContent(html);
 
     console.log('Waiting for network...')
-    await page.waitForNetworkIdle({ idleTime: 100, timeout: 3000 });
+    await page.waitForNetworkIdle({ idleTime: 100, timeout: 100_000 });
 
     await page.waitForSelector('body');
     const body = await page.$('body');
