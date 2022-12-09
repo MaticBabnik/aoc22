@@ -3,6 +3,8 @@ import puppeteer, { PuppeteerLaunchOptions } from 'puppeteer';
 
 import { ILeaderboard, ILeaderboardUser } from './api';
 
+const hToMs = (x: number) => (x) * 60 * 60 * 1000;
+
 const template = readFileSync('template.html').toString();
 
 function timestampToLocalTime(ts?: number) {
@@ -41,7 +43,7 @@ function pad(n: number, digits: number) {
     return `${'0'.repeat(digits - 1)}${n}`.slice(-digits);
 }
 
-export function buildHTML(leaderboard: ILeaderboard) {
+export function buildHTML(leaderboard: ILeaderboard, maxInactiveH: number) {
     const date = new Date();
     const day = date.getDate() - (date.getHours() < 3 ? 1 : 0); //FIXME: kinda hardcoded for European timezones
 
@@ -49,13 +51,23 @@ export function buildHTML(leaderboard: ILeaderboard) {
 
     let t = template.replace('<!--day-->', `0${day}`.slice(-2));
 
-    const peopleWithSolves = Object.values(leaderboard.members).filter(p => Object.keys(p.completion_day_level).length > 0);
+    const people = Object.values(leaderboard.members).sort((a, b) => b.local_score - a.local_score);
 
-    const p1b = bestSolve(leaderboard, day, 1), p2b = bestSolve(leaderboard, day, 2);
+    const now = Date.now();
 
-    const digits = Math.floor(Math.log10(peopleWithSolves.length - 1)) + 1;
+    const lastOnLeaderboard = [...people].reverse().find(x => now - 1000 * x.last_star_ts < hToMs(maxInactiveH));
+    const endIndex = lastOnLeaderboard ? people.indexOf(lastOnLeaderboard) : 5; //try to show at least the first 5
+    
+    console.log({lastOnLeaderboard, endIndex})
 
-    const leaderboardMembers = peopleWithSolves.sort((a, b) => b.local_score - a.local_score);
+    const filteredPeople = people.slice(0, endIndex);
+    const p1b = bestSolve(leaderboard, day, 1),
+        p2b = bestSolve(leaderboard, day, 2);
+
+
+    const digits = Math.floor(Math.log10(filteredPeople.length - 1)) + 1;
+
+    const leaderboardMembers = filteredPeople.sort((a, b) => b.local_score - a.local_score);
     const usersHtml = leaderboardMembers.map((lm, i) => buildUserHTML(lm, pad(i, digits), day, p1b, p2b)).join('\n');
 
     return t.replace('<!--players-->', usersHtml);
@@ -76,13 +88,13 @@ function getPuppeteerConfig(): PuppeteerLaunchOptions {
             ]
         }
     } else return {
-
+        headless: false
     };
 }
 
-export async function getImageBuffer(leaderboard: ILeaderboard) {
+export async function getImageBuffer(leaderboard: ILeaderboard, maxInactiveH: number) {
     console.log('Building HTML...')
-    const html = buildHTML(leaderboard);
+    const html = buildHTML(leaderboard, maxInactiveH);
 
     console.log('Launching browser...')
     const browser = await puppeteer.launch(getPuppeteerConfig());

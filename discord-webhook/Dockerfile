@@ -4,15 +4,10 @@ FROM node:19 AS base
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
 # ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-RUN apt-get update \
-    && apt-get install -y wget gnupg \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 fonts-noto-color-emoji \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* 
-# ---- everything above is borrowed from https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile
+RUN apt update \
+    && apt update \
+    && apt install -y chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 fonts-noto-color-emoji \
+      --no-install-recommends 
 
 FROM base AS build
 
@@ -44,5 +39,5 @@ ENV LOCALE="sl-SI"
 ENV LEADERBOARD='<replace me>'
 ENV WEBHOOK='<replace me>'
 ENV SESSION='<replace me>'
-
+ENV MAX_INACTIVE_HOURS='24'
 CMD node /app/build/index.js
