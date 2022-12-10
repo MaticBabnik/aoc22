@@ -56,6 +56,12 @@ function* ____ignoreme() {
     return;
 }
 
+function dbg(me, msg) {
+    if (msg)
+        console.log(msg);
+    console.log(me);
+    return me;
+}
 
 const applyToGen = {
     by, map, filter, find, reduce, sum, collect
@@ -64,6 +70,10 @@ const applyToGen = {
 const applyToArr = {
     by, sum
 };
+
+const applyToObject = {
+    dbg
+}
 
 Object.entries(applyToGen).forEach(([k, fn]) => {
     ____ignoreme.__proto__.prototype[k] = function (...args) {
@@ -77,6 +87,11 @@ Object.entries(applyToArr).forEach(([k, fn]) => {
     }
 });
 
+Object.entries(applyToObject).forEach(([k, fn]) => {
+    Object.prototype[k] = function (...args) {
+        return fn(this, ...args);
+    }
+});
 
 
 function dsplit(str, seperators) {

@@ -12,6 +12,10 @@ declare interface Array<T extends string | number> {
     sum(): T;
 }
 
+declare interface Object {
+    dbg(msg?: string): this;
+}
+
 declare interface Generator<T, TReturn, TNext> {
     by(n: number): Generator<unknown, undefined, TNext[]>;
     map<TOut>(fn: (val: TNext) => TOut): Generator<unknown, undefined, TOut>;
