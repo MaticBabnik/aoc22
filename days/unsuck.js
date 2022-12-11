@@ -72,7 +72,7 @@ const applyToArr = {
 };
 
 const applyToObject = {
-    dbg
+    // dbg 
 }
 
 Object.entries(applyToGen).forEach(([k, fn]) => {
