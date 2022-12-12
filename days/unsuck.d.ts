@@ -6,6 +6,7 @@ export declare function input(path: string, ...seperators: [string, string, stri
 
 declare interface Array<T> {
     by(n: number): Generator<unknown, undefined, T[]>;
+    freq(): Record<T, number>;
 }
 
 declare interface Array<T extends string | number> {
@@ -23,6 +24,7 @@ declare interface Generator<T, TReturn, TNext> {
     find(fn: (val: TNext) => boolean): TNext;
     reduce<TOut>(fn: (acc: TOut, val: TNext) => TNext, acc: TOut): TOut;
     collect(): TNext[];
+    freq(): Record<TNext, number>;
 }
 
 declare interface Generator<T, TReturn, TNext extends string | number> {

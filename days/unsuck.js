@@ -14,6 +14,15 @@ function* by(i, n) {
     }
 }
 
+function freq(i) {
+    const f = {};
+    for (let x of i) {
+        if (!f[x]) f[x] = 0;
+        f[x]++;
+    }
+    return f;
+}
+
 function* map(i, mapper) {
     for (let x of i) {
         yield mapper(x);
@@ -64,11 +73,11 @@ function dbg(me, msg) {
 }
 
 const applyToGen = {
-    by, map, filter, find, reduce, sum, collect
+    by, freq, map, filter, find, reduce, sum, collect
 };
 
 const applyToArr = {
-    by, sum
+    by, freq, sum
 };
 
 const applyToObject = {
