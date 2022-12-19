@@ -57,15 +57,16 @@ export function buildHTML(leaderboard: ILeaderboard, maxInactiveH: number) {
 
     const lastOnLeaderboard = [...people].reverse().find(x => now - 1000 * x.last_star_ts < hToMs(maxInactiveH));
     const endIndex = lastOnLeaderboard ? people.indexOf(lastOnLeaderboard) : 5; //try to show at least the first 5
-    
-    console.log({lastOnLeaderboard, endIndex})
+
+    console.log({ lastOnLeaderboard, endIndex })
 
     const filteredPeople = people.slice(0, endIndex);
     const p1b = bestSolve(leaderboard, day, 1),
         p2b = bestSolve(leaderboard, day, 2);
 
 
-    const digits = Math.floor(Math.log10(filteredPeople.length - 1)) + 1;
+    let digits = Math.floor(Math.log10(filteredPeople.length - 1)) + 1;
+    if (digits <= 0) digits = 1; // idk;
 
     const leaderboardMembers = filteredPeople.sort((a, b) => b.local_score - a.local_score);
     const usersHtml = leaderboardMembers.map((lm, i) => buildUserHTML(lm, pad(i, digits), day, p1b, p2b)).join('\n');
