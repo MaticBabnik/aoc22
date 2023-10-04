@@ -76,6 +76,8 @@ const applyToGen = {
     by, freq, map, filter, find, reduce, sum, collect
 };
 
+
+
 const applyToArr = {
     by, freq, sum
 };
@@ -85,21 +87,30 @@ const applyToObject = {
 }
 
 Object.entries(applyToGen).forEach(([k, fn]) => {
-    ____ignoreme.__proto__.prototype[k] = function (...args) {
-        return fn(this, ...args);
-    }
+    Object.defineProperty(____ignoreme.__proto__.prototype, k, {
+        enumerable: false,
+        value: function (...args) {
+            return fn(this, ...args);
+        }
+    })
 });
 
 Object.entries(applyToArr).forEach(([k, fn]) => {
-    Array.prototype[k] = function (...args) {
-        return fn(this, ...args);
-    }
+    Object.defineProperty(Array.prototype, k, {
+        enumerable: false,
+        value: function (...args) {
+            return fn(this, ...args);
+        }
+    })
 });
 
 Object.entries(applyToObject).forEach(([k, fn]) => {
-    Object.prototype[k] = function (...args) {
-        return fn(this, ...args);
-    }
+    Object.defineProperty(Object.prototype, k, {
+        enumerable: false,
+        value: function (...args) {
+            return fn(this, ...args);
+        }
+    })
 });
 
 

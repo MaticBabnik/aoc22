@@ -75,5 +75,7 @@ function floodTo0(map, start, extra) {
 }
 
 console.log({ start, end });
+console.profile('d12')
 console.log(doFlood(map, start, end));
 console.log(floodTo0(map, end));
+console.profileEnd('d12')
